@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 
 	engine.rootContext()->setContextProperty("back", &pers);
 	engine.rootContext()->setContextProperty("PersModel", pers.pers());
+	engine.rootContext()->setContextProperty("PersModelChamps", pers.persChamp());
 
 	const QUrl url(u"qrc:/res/qml/main.qml"_qs);
 	QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

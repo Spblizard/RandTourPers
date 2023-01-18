@@ -15,6 +15,11 @@ void PersModel::setData(const QStringList &data)
 	}
 }
 
+void PersModel::setData(const QList<PersData> &data)
+{
+	mData = data;
+}
+
 QString PersModel::color(int index)
 {
 	if (index < 2)
@@ -67,14 +72,17 @@ QHash<int, QByteArray> PersModel::roleNames() const
 	return roles;
 }
 
-void PersModel::setVisibleCell(int index)
+void PersModel::setWinner(int index)
 {
 	int trueIndex = 0;
-	if (index % 2)
-		trueIndex = index - 1;
-	else
-		trueIndex = index + 1;
+	if (mData.size() != 1) {
+		if (index % 2)
+			trueIndex = index - 1;
+		else
+			trueIndex = index + 1;
+	}
 	mData[trueIndex].setVisible(false);
+	mNameLose = mData[trueIndex].name();
 	mCountVisible++;
 	if (mCountVisible < (mData.size() / 2)) {
 		QModelIndex i = createIndex(trueIndex, 0);
@@ -83,6 +91,46 @@ void PersModel::setVisibleCell(int index)
 		mCountVisible = 0;
 		nextRound();
 	}
+}
+
+QString PersModel::getNameLose()
+{
+	return mNameLose;
+}
+
+QString PersModel::getNameChamp()
+{
+	if (mData.size() == 1) {
+		QString tmp = mData[0].name();
+		mData.clear();
+		return tmp;
+	} else {
+		return "NULL";
+	}
+}
+
+QList<PersData> PersModel::getData()
+{
+	return mData;
+}
+
+int PersModel::getSize()
+{
+	return mData.size();
+}
+
+void PersModel::cleanData()
+{
+	int i = mData.size();
+	beginRemoveRows(QModelIndex(), 0, i);
+	endRemoveRows();
+}
+
+void PersModel::refreshModel()
+{
+	int index = mData.size() - 1;
+	beginInsertRows(QModelIndex(), 0, index);
+	endInsertRows();
 }
 
 void PersModel::nextRound()
@@ -97,9 +145,11 @@ void PersModel::nextRound()
 	beginRemoveRows(QModelIndex(), 0, index);
 	endRemoveRows();
 	mData = tmp;
-	qDebug() << mData.size();
-	index = mData.size() - 1;
-	beginInsertRows(QModelIndex(), 0, index);
-	endInsertRows();
+	qDebug() << "nextRound: " << mData.size() << " " << mData[0].name();
+	if (mData.size() > 1) {
+		index = mData.size() - 1;
+		beginInsertRows(QModelIndex(), 0, index);
+		endInsertRows();
+	}
 	//emit dataChanged(i, i);
 }

@@ -14,15 +14,22 @@ public:
 
 public slots:
 	PersModel *pers();
+	PersModel *persChamp();
 
 signals:
+	void champName(const QString &name);
 
 private:
-	QStringList randomStrList(const QStringList &list);
+	QStringList randomStrList();
+	void updatePers(int index);
 	PersModel *mPers;
+	PersModel *mPersChamp;
+	int mMaxBound;
+	QStringList mAllPers;
+	bool mFinal;
 
 public slots:
-	void setVisibleCell(int index);
+	void setWinner(int index);
 
 };
 
