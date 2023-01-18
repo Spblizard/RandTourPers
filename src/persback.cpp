@@ -7,6 +7,8 @@ PersBack::PersBack(QObject *parent)
 
 	mAllPers = conf.getConfPers();
 	mMaxBound = mAllPers.size();
+	if (mMaxBound == 8)
+		mFinal = true;
 	mPers->setData(randomStrList());
 }
 
